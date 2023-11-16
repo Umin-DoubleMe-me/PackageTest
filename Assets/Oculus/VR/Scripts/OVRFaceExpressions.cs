@@ -29,13 +29,18 @@ using UnityEngine;
 /// <remarks>
 /// Refers to the <see cref="OVRFaceExpressions.FaceExpression"/> enum for the list of face expressions.
 /// </remarks>
-public class OVRFaceExpressions : MonoBehaviour, IReadOnlyCollection<float>
+[HelpURL("https://developer.oculus.com/reference/unity/latest/class_o_v_r_face_expressions")]
+public class OVRFaceExpressions : MonoBehaviour, IReadOnlyCollection<float>, OVRFaceExpressions.WeightProvider
 {
     /// <summary>
     /// True if face tracking is enabled, otherwise false.
     /// </summary>
     public bool FaceTrackingEnabled => OVRPlugin.faceTrackingEnabled;
 
+    public interface WeightProvider
+    {
+        float GetWeight(FaceExpression expression);
+    }
 
     /// <summary>
     /// True if the facial expressions are valid, otherwise false.
@@ -179,6 +184,8 @@ public class OVRFaceExpressions : MonoBehaviour, IReadOnlyCollection<float>
             return _currentFaceState.ExpressionWeights[(int)expression];
         }
     }
+
+    public float GetWeight(FaceExpression expression) => this[expression];
 
     /// <summary>
     /// This method tries to gets the weight of the given expression if it's available.

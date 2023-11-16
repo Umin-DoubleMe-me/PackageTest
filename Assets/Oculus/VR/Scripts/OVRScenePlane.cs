@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  * All rights reserved.
  *
@@ -28,6 +28,7 @@ using UnityEngine;
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(OVRSceneAnchor))]
+[HelpURL("https://developer.oculus.com/reference/unity/latest/class_o_v_r_scene_plane")]
 public class OVRScenePlane : MonoBehaviour, IOVRSceneComponent
 {
     /// <summary>
@@ -113,13 +114,15 @@ public class OVRScenePlane : MonoBehaviour, IOVRSceneComponent
         }
     }
 
-    [Tooltip("When enabled, scales the child transforms according to the dimensions of this plane")]
+    [Tooltip("When enabled, scales the child transforms according to the dimensions of this plane. " +
+        "If both Volume and Plane components exist on the game object, the volume takes precedence.")]
     [SerializeField]
-    private bool _scaleChildren = true;
+    internal bool _scaleChildren = true;
 
-    [Tooltip("When enabled, offsets the child transforms according to the offset of this plane")]
+    [Tooltip("When enabled, offsets the child transforms according to the offset of this plane. " +
+        "If both Volume and Plane components exist on the game object, the volume takes precedence.")]
     [SerializeField]
-    private bool _offsetChildren = true;
+    internal bool _offsetChildren = true;
 
     internal JobHandle? _jobHandle;
 
@@ -194,15 +197,14 @@ public class OVRScenePlane : MonoBehaviour, IOVRSceneComponent
             Width = rect.Size.w;
             Height = rect.Size.h;
 
-            var planePivot = Vector2.Lerp(
-                transform.TransformPoint(rect.Pos.FromVector2f()),
-                transform.TransformPoint(rect.Pos.FromVector2f() + rect.Size.FromSizef()), 0.5f);
+            Vector2 planePivot = transform.TransformPoint(
+                rect.Pos.FromVector2f() + (rect.Size.FromSizef() / 2));
             var anchorPivot = new Vector2(transform.position.x, transform.position.y);
             Offset = planePivot - anchorPivot;
 
             OVRSceneManager.Development.Log(nameof(OVRScenePlane),
                 $"[{_sceneAnchor.Uuid}] Plane has dimensions {Dimensions} " +
-                $"and offset {Offset}.");
+                $"and offset {Offset}.", gameObject);
 
             if (ScaleChildren)
                 SetChildScale();
@@ -212,7 +214,8 @@ public class OVRScenePlane : MonoBehaviour, IOVRSceneComponent
         else
         {
             OVRSceneManager.Development.LogError(nameof(OVRScenePlane),
-                $"[{GetComponent<OVRSceneAnchor>().Uuid}] Failed to retrieve plane's information.");
+                $"[{GetComponent<OVRSceneAnchor>().Uuid}] Failed to retrieve plane's information.",
+                gameObject);
         }
     }
 

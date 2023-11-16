@@ -123,23 +123,19 @@ namespace Oculus.Interaction
 
             switch (evt.Type)
             {
-				case PointerEventType.Hover:
-					pointer = new Pointer(canvas);
-					pointer.PointerEventData = new PointerEventData(eventSystem);
-					pointer.SetPosition(evt.Pose.position);
-					_pointerMap.TryAdd(evt.Identifier, pointer);
-					break;
-				case PointerEventType.Unhover:
-					_pointerMap.TryGetValue(evt.Identifier, out var value);
-					if (value != null)
-					{
-						pointer = _pointerMap[evt.Identifier];
-						_pointerMap.Remove(evt.Identifier);
-						pointer.MarkForDeletion();
-						_pointersForDeletion.Add(pointer);
-					}
-					break;
-				case PointerEventType.Select:
+                case PointerEventType.Hover:
+                    pointer = new Pointer(canvas);
+                    pointer.PointerEventData = new PointerEventData(eventSystem);
+                    pointer.SetPosition(evt.Pose.position);
+                    _pointerMap.Add(evt.Identifier, pointer);
+                    break;
+                case PointerEventType.Unhover:
+                    pointer = _pointerMap[evt.Identifier];
+                    _pointerMap.Remove(evt.Identifier);
+                    pointer.MarkForDeletion();
+                    _pointersForDeletion.Add(pointer);
+                    break;
+                case PointerEventType.Select:
                     pointer = _pointerMap[evt.Identifier];
                     pointer.SetPosition(evt.Pose.position);
                     pointer.Press();

@@ -295,6 +295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useRecommendedMSAALevel: 1
   _monoscopic: 0
+  _sharpenType: 0
   enableDynamicResolution: 0
   minDynamicResolutionScale: 1
   maxDynamicResolutionScale: 1
@@ -335,10 +336,12 @@ MonoBehaviour:
   virtualGreenScreenApplyDepthCulling: 0
   virtualGreenScreenDepthTolerance: 0.2
   mrcActivationMode: 0
+  launchMultimodalHandsControllersOnStartup: 0
   isInsightPassthroughEnabled: 1
   requestBodyTrackingPermissionOnStartup: 0
   requestFaceTrackingPermissionOnStartup: 0
   requestEyeTrackingPermissionOnStartup: 0
+  requestScenePermissionOnStartup: 0
   _localDimming: 1
   _trackingOriginType: 1
   usePositionTracking: 1
@@ -348,6 +351,8 @@ MonoBehaviour:
   AllowRecenter: 1
   LateControllerUpdate: 1
   LateLatching: 0
+  _readOnlyControllerDrivenHandPosesType: 0
+  controllerDrivenHandPosesType: 0
 --- !u!114 &6742513031603248897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,30 +664,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3033392616407680186}
     m_Modifications:
-    - target: {fileID: 151980081095054682, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 860493605650253209, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: _triggerAction.m_Action.m_Id
-      value: b224285c-ab17-4477-a0dd-c33dd1994c05
-      objectReference: {fileID: 0}
-    - target: {fileID: 860493605650253209, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: _triggerAction.m_Action.m_Name
-      value: Trigger
-      objectReference: {fileID: 0}
-    - target: {fileID: 2036307196567450107, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2386039807187088210, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2660072711066768959, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4844311538246136308, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -727,41 +708,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5290859086857990397, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5376640691437310934, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
       propertyPath: m_Name
       value: Left Hand_OculusXR
-      objectReference: {fileID: 0}
-    - target: {fileID: 5376640691437310934, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5441074067857374509, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6162117274636619407, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7739315356949181841, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7758349935688208735, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8048058750355965214, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8814577951220135198, guid: 6a7aaf1f2b3462e428eeb3401a7d8ac9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1020,10 +969,6 @@ PrefabInstance:
     - target: {fileID: 5156061812969019381, guid: 162f707d700ca3944a471c240674d9ed, type: 3}
       propertyPath: m_Name
       value: Right Hand_OculusXR
-      objectReference: {fileID: 0}
-    - target: {fileID: 5156061812969019381, guid: 162f707d700ca3944a471c240674d9ed, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

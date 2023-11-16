@@ -51,6 +51,7 @@ using System.Collections.Generic;
 /// 5. Equirect: Display overlay as a 360-degree equirectangular skybox.
 /// </summary>
 [ExecuteInEditMode]
+[HelpURL("https://developer.oculus.com/reference/unity/latest/class_o_v_r_overlay")]
 public class OVROverlay : MonoBehaviour
 {
     #region Interface
@@ -103,10 +104,10 @@ public class OVROverlay : MonoBehaviour
     public bool isProtectedContent = false;
 
     //Source and dest rects
-    public Rect srcRectLeft = new Rect();
-    public Rect srcRectRight = new Rect();
-    public Rect destRectLeft = new Rect();
-    public Rect destRectRight = new Rect();
+    public Rect srcRectLeft = new Rect(0, 0, 1, 1);
+    public Rect srcRectRight = new Rect(0, 0, 1, 1);
+    public Rect destRectLeft = new Rect(0, 0, 1, 1);
+    public Rect destRectRight = new Rect(0, 0, 1, 1);
 
     // Used to support legacy behavior where the top left was considered the origin
     public bool invertTextureRects = false;
@@ -209,7 +210,9 @@ public class OVROverlay : MonoBehaviour
         "When checked, the layer will use efficient sharpen.")]
     public bool useEfficientSharpen = false;
 
-
+    [Tooltip(
+        "When checked, The runtime automatically chooses the appropriate sharpening or super sampling filter")]
+    public bool useAutomaticFiltering = false;
 
     /// <summary>
     /// Preview the overlay in the editor using a mesh renderer.
@@ -574,8 +577,8 @@ public class OVROverlay : MonoBehaviour
                 {
 #if UNITY_EDITOR
                     var assetPath = UnityEditor.AssetDatabase.GetAssetPath(textures[i]);
-                    var importer = (UnityEditor.TextureImporter)UnityEditor.TextureImporter.GetAtPath(assetPath);
-                    if (importer && importer.textureType != UnityEditor.TextureImporterType.Default)
+                    var importer = UnityEditor.AssetImporter.GetAtPath(assetPath) as UnityEditor.TextureImporter;
+                    if (importer != null && importer.textureType != UnityEditor.TextureImporterType.Default)
                     {
                         Debug.LogError("Need Default Texture Type for overlay");
                         return false;
@@ -713,15 +716,23 @@ public class OVROverlay : MonoBehaviour
     }
 
     // A blit method that only draws into the specified rect by setting the viewport.
-    private void BlitSubImage(Texture src, RenderTexture dst, Material mat, Rect rect)
+    private void BlitSubImage(Texture src, RenderTexture dst, Material mat, Rect rect, bool invertRect = false)
     {
         var p = RenderTexture.active;
         RenderTexture.active = dst;
 
-        // our rects are inverted
-        rect.y = 1 - rect.y - rect.height;
-        var viewport = new Rect(dst.width * rect.x, dst.height * rect.y, dst.width * rect.width,
-            dst.height * rect.height);
+        if (invertRect)
+        {
+            // our rects are inverted
+            rect.y = 1 - rect.y - rect.height;
+        }
+
+        // Round our rect to the bounding pixel rect
+        var viewport = new Rect(
+            Mathf.Floor(dst.width * rect.x),
+            Mathf.Floor(dst.height * rect.y),
+            Mathf.Ceil(dst.width * rect.xMax) - Mathf.Floor(dst.width * rect.x),
+            Mathf.Ceil(dst.height * rect.yMax) - Mathf.Floor(dst.height * rect.y));
 
         // do our blit using GL ops
         GL.PushMatrix();
@@ -731,11 +742,11 @@ public class OVROverlay : MonoBehaviour
         tex2DMaterial.SetPass(0);
 
         GL.Begin(GL.TRIANGLES);
-        GL.TexCoord(new Vector2(rect.x, rect.y));
+        GL.TexCoord(new Vector2(viewport.x / dst.width, viewport.y / dst.height));
         GL.Vertex3(viewport.x, viewport.y, 0);
-        GL.TexCoord(new Vector2(rect.x, rect.y + rect.height * 2));
+        GL.TexCoord(new Vector2(viewport.x / dst.width, (viewport.y + viewport.height * 2) / dst.height));
         GL.Vertex3(viewport.x, viewport.y + viewport.height * 2, 0);
-        GL.TexCoord(new Vector2(rect.x + rect.width * 2, rect.y));
+        GL.TexCoord(new Vector2((viewport.x + viewport.width * 2) / dst.width, viewport.y / dst.height));
         GL.Vertex3(viewport.x + viewport.width * 2, viewport.y, 0);
         GL.End();
         GL.Flush();
@@ -769,10 +780,11 @@ public class OVROverlay : MonoBehaviour
             // OpenGL does not support copy texture between different format
             bool isOpenGL = SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3 ||
                             SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.OpenGLES2;
-            // Graphics.CopyTexture only works when textures are same size
+            // Graphics.CopyTexture only works when textures are same size and same mipmap count
             bool isSameSize = et.width == textures[eyeId].width && et.height == textures[eyeId].height;
+            bool sameMipMap = textures[eyeId].mipmapCount == et.mipmapCount;
 
-            bool bypassBlit = Application.isMobilePlatform && !isOpenGL && isSameSize;
+            bool bypassBlit = Application.isMobilePlatform && !isOpenGL && isSameSize && sameMipMap;
             if (bypassBlit)
             {
                 Graphics.CopyTexture(textures[eyeId], et);
@@ -820,7 +832,7 @@ public class OVROverlay : MonoBehaviour
                     blitMat.SetInt("_flip", OVRPlugin.nativeXrApi == OVRPlugin.XrApi.OpenXR ? 1 : 0);
                     if (overrideTextureRectMatrix)
                     {
-                        BlitSubImage(textures[eyeId], tempRTDst, tex2DMaterial, GetBlitRect(eyeId));
+                        BlitSubImage(textures[eyeId], tempRTDst, tex2DMaterial, GetBlitRect(eyeId), invertTextureRects);
                     }
                     else
                     {
@@ -860,14 +872,34 @@ public class OVROverlay : MonoBehaviour
             UpdateTextureRectMatrix();
         }
 
+        bool internalUseEfficientSharpen = useEfficientSharpen;
+        bool internalUseEfficientSupersample = useEfficientSupersample;
+
+        // No sharpening or supersampling method was selected, defaulting to efficient supersampling and efficient sharpening.
+        if (useAutomaticFiltering && !(useEfficientSharpen || useEfficientSupersample || useExpensiveSharpen || useExpensiveSuperSample))
+        {
+            internalUseEfficientSharpen = true;
+            internalUseEfficientSupersample = true;
+        }
+
+        if (!useAutomaticFiltering && ((useEfficientSharpen && useEfficientSupersample)
+           || (useExpensiveSharpen && useExpensiveSuperSample)
+           || (useEfficientSharpen && useExpensiveSuperSample)
+           || (useExpensiveSharpen && useEfficientSupersample)))
+        {
+
+            Debug.LogError("Warning-XR sharpening and supersampling cannot be enabled simultaneously, either enable autofiltering or disable one of the options");
+            return false;
+        }
+
         bool noTextures = isExternalSurface || !NeedsTexturesForShape(currentOverlayShape);
         bool isOverlayVisible = OVRPlugin.EnqueueSubmitLayer(overlay, headLocked, noDepthBufferTesting,
             noTextures ? System.IntPtr.Zero : layerTextures[0].appTexturePtr,
             noTextures ? System.IntPtr.Zero : layerTextures[rightEyeIndex].appTexturePtr, layerId, frameIndex,
             pose.flipZ().ToPosef_Legacy(), scale.ToVector3f(), layerIndex, (OVRPlugin.OverlayShape)currentOverlayShape,
             overrideTextureRectMatrix, textureRectMatrix, overridePerLayerColorScaleAndOffset, colorScale, colorOffset,
-            useExpensiveSuperSample, useBicubicFiltering, useEfficientSupersample,
-            useEfficientSharpen, useExpensiveSharpen, hidden, isProtectedContent
+            useExpensiveSuperSample, useBicubicFiltering, internalUseEfficientSupersample,
+            internalUseEfficientSharpen, useExpensiveSharpen, hidden, isProtectedContent, useAutomaticFiltering
         );
         prevOverlayShape = currentOverlayShape;
 
@@ -877,20 +909,31 @@ public class OVROverlay : MonoBehaviour
     private void SetupEditorPreview()
     {
 #if UNITY_EDITOR
-        if (previewInEditor && previewObject == null)
+        if (previewInEditor)
         {
-            previewObject = new GameObject();
-            previewObject.hideFlags = HideFlags.HideAndDontSave;
-            previewObject.transform.SetParent(this.transform, false);
-            OVROverlayMeshGenerator generator = previewObject.AddComponent<OVROverlayMeshGenerator>();
-            generator.SetOverlay(this);
+            if (previewObject == null)
+            {
+                previewObject = new GameObject();
+                previewObject.hideFlags = HideFlags.HideAndDontSave;
+                previewObject.transform.SetParent(this.transform, false);
+                OVROverlayMeshGenerator generator = previewObject.AddComponent<OVROverlayMeshGenerator>();
+                generator.SetOverlay(this);
+            }
+            previewObject.SetActive(true);
         }
-        else if (!previewInEditor && previewObject != null)
+        else if (previewObject != null)
         {
-            UnityEngine.Object.DestroyImmediate(previewObject);
+            previewObject.SetActive(false);
+            DestroyImmediate(previewObject);
             previewObject = null;
         }
 #endif
+    }
+
+    public void ResetEditorPreview()
+    {
+        previewInEditor = false;
+        previewInEditor = true;
     }
 
     public static bool IsPassthroughShape(OverlayShape shape)
@@ -935,12 +978,7 @@ public class OVROverlay : MonoBehaviour
         if (OVRManager.OVRManagerinitialized)
             InitOVROverlay();
 
-#if UNITY_EDITOR
-        if (previewObject != null)
-        {
-            previewObject.SetActive(true);
-        }
-#endif
+        SetupEditorPreview();
     }
 
     void InitOVROverlay()
@@ -1164,7 +1202,7 @@ public class OVROverlay : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!OVRManager.OVRManagerinitialized)
+        if (!OVRManager.OVRManagerinitialized || !OVRPlugin.userPresent)
             return;
         if (!xrDeviceConstructed)
         {
@@ -1220,7 +1258,6 @@ public class OVROverlay : MonoBehaviour
         bool createdLayer = CreateLayer(newDesc.MipLevels, newDesc.SampleCount, newDesc.Format, newDesc.LayerFlags,
             newDesc.TextureSize, newDesc.Shape);
 
-
         if (layerIndex == -1 || layerId <= 0)
         {
             if (createdLayer)
@@ -1263,6 +1300,5 @@ public class OVROverlay : MonoBehaviour
         if (rend)
             rend.enabled = !isOverlayVisible;
     }
-
     #endregion
 }

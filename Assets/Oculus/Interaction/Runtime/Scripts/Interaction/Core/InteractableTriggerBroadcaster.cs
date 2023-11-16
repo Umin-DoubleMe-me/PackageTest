@@ -124,7 +124,6 @@ namespace Oculus.Interaction
         {
             if (_started)
             {
-                ForceGlobalUpdateTriggers();
                 // Clean up any remaining active triggers
                 foreach (Rigidbody rigidbody in _rigidbodyTriggers.Keys)
                 {

@@ -2,7 +2,6 @@ using DoubleMe.Modules.Manipulator;
 using DoubleMe.Modules.Platform;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -47,89 +46,102 @@ public interface IPlatform
 
 public class XRIManager : MonoBehaviour
 {
+
 	[SerializeField] public PlatFormType PlatFormType;
-	private bool _isInitialized = false;
-	private IPlatform _platform;
-	public IPlatform Platform => _platform;
-	public bool IsInitialized => _isInitialized;
+	[SerializeField] private List<GameObject> _platformList;
+	
+	public IPlatform Platform { get; private set; }
+
+	public XRIPlatformManipulator PlatformManipulator { get; private set; }
+	public IPlatformHand PlatformHand { get; private set; }
+
+	public bool IsInitialized {get; private set; } = false;
 	public Action<bool> OnInitialize;
 
 	public void InitializeManager(Action<bool> result = null)
 	{
+		Platform = GeneratePlatform(result);
+		GeneratePlatFormTypeManipulator();
+	}
+
+	private void OnDisable()
+	{
+		if (Platform != null)
+		{
+			Platform.OnResult -= OnPlatformInitializeResult;
+			Platform = null;
+			OnInitialize = null;
+		}
+	}
+
+	private IPlatform GeneratePlatform(Action<bool> result = null)
+	{
+		IPlatform resultPlatform = null;
+
 		switch (PlatFormType)
 		{
 			case PlatFormType.Oculus:
-				_platform = new OculusPlatform();
+				resultPlatform = new OculusPlatform();
 				break;
 			case PlatFormType.Pico:
 				break;
 			case PlatFormType.Apple:
 				break;
+			case PlatFormType.Hololens:
+				break;
 		}
 
-		if (_platform != null)
+		if(resultPlatform == null)
 		{
-			if (result != null)
-			{
-				OnInitialize += result;
-			}
-
-			_platform.OnResult += OnPlatformInitializeResult;
-			_platform.Initialize();
+			Debug.LogError("[XRIManager] : There is no Platform");
+			return null;
 		}
+
+		if (result != null)
+			OnInitialize += result;
+
+		resultPlatform.OnResult += OnPlatformInitializeResult;
+		resultPlatform.Initialize();
+		return resultPlatform;
 	}
 
 	public PlatformUserData GetPlatformUserData()
 	{
-		if (!_isInitialized || _platform == null) return null;
-		return _platform.UserData;
+		if (!IsInitialized || Platform == null) return null;
+		return Platform.UserData;
 	}
 
 	private void OnPlatformInitializeResult(bool success)
 	{
-		_isInitialized = success;
-		OnInitialize?.Invoke(_isInitialized);
-	}
-
-	private void OnDisable()
-	{
-		if (_platform != null)
-		{
-			_platform.OnResult -= OnPlatformInitializeResult;
-			_platform = null;
-			OnInitialize = null;
-		}
-	}
-
-	[SerializeField] private List<GameObject> _platformList;
-
-	public XRIPlatformManipulator PlatformManipulator { get; private set; }
-	public IPlatformHand PlatformHand { get; private set; }
-
-	public void Init()
-	{
-		GeneratePlatFormTypeManipulator();
-		PlatformManipulator.InitData();
+		IsInitialized = success;
+		OnInitialize?.Invoke(IsInitialized);
 	}
 
 	private void GeneratePlatFormTypeManipulator()
 	{
-		//int targetIndex = _platformList.FindIndex(platform => platform.name.Contains(Managers.PlatformManager.PlatFormType.ToString()));
-		//GameObject platformObj = Instantiate(_platformList[targetIndex]);
-		//platformObj.transform.SetParent(transform);
+		int targetIndex = _platformList.FindIndex(platform => platform.name.Contains(PlatFormType.ToString()));
+		GameObject platformObj = Instantiate(_platformList[targetIndex]);
+		platformObj.transform.SetParent(transform);
 
-		//switch (Managers.PlatformManager.PlatFormType)
-		//{
-		//	case PlatFormType.Default:
-		//		break;
-		//	case PlatFormType.Unity:
-		//		break;
-		//	case PlatFormType.Oculus:
-		//	case PlatFormType.OculusXR:
-		//	case PlatFormType.Hololens:
-		//		PlatformManipulator = platformObj.GetComponentInChildren<IPlatformManipulator>();
-		//		PlatformHand = platformObj.GetComponentInChildren<IPlatformHand>();
-		//		break;
-		//}
+		switch (PlatFormType)
+		{
+			case PlatFormType.Oculus:
+			case PlatFormType.Hololens:
+				PlatformManipulator = platformObj.GetComponentInChildren<XRIPlatformManipulator>();
+				PlatformHand = platformObj.GetComponentInChildren<IPlatformHand>();
+				break;
+			case PlatFormType.Apple:
+				break;
+			case PlatFormType.Pico:
+				break;
+		}
+
+		if(PlatformManipulator == null || PlatformHand == null)
+		{
+			Debug.LogError("[XRIManager] : There is no PlatformManipulator");
+			return;
+		}
+
+		PlatformManipulator.InitData();
 	}
 }
