@@ -42,10 +42,11 @@ public class XRIHandComponents
 public class XRIPlatformHand : MonoBehaviour, IPlatformHand
 {
 	[SerializeField] private XRIHandComponents _XRILeftHandComponents;
-	public XRIHandComponents LeftHandComponents => _XRILeftHandComponents;
 	[SerializeField] private XRIHandComponents _XRIRightHandComponents;
-	public XRIHandComponents RightHandComponents => _XRIRightHandComponents;
 	private List<XRHandJointID> _tipIndexList = new List<XRHandJointID>();
+
+	public XRIHandComponents LeftHandComponents => _XRILeftHandComponents;
+	public XRIHandComponents RightHandComponents => _XRIRightHandComponents;
 
 	public Pose LeftHandPose => _XRILeftHandComponents != null ? _XRILeftHandComponents.CurrentPose : XRIHandComponents.DefaultPose;
 
@@ -82,7 +83,23 @@ public class XRIPlatformHand : MonoBehaviour, IPlatformHand
 
 	public bool IsLeftTracking => _XRILeftHandComponents.IsTrack;
 	public bool IsRightTracking => _XRIRightHandComponents.IsTrack;
-	public Pose GetFinger(bool isRightHand, int fingerIdx, bool isLocal)
+
+	protected virtual void Start()
+	{
+		_tipIndexList = new List<XRHandJointID>
+		{
+			XRHandJointID.ThumbTip,
+			XRHandJointID.IndexTip,
+			XRHandJointID.MiddleTip,
+			XRHandJointID.RingTip,
+			XRHandJointID.LittleTip,
+		};
+
+		_XRILeftHandComponents.InitializeDummyHandRoot(this.transform.root);
+		_XRIRightHandComponents.InitializeDummyHandRoot(this.transform.root);
+	}
+
+	public virtual Pose GetFinger(bool isRightHand, int fingerIdx, bool isLocal)
 	{
 		XRIHandComponents handComp = isRightHand ? _XRIRightHandComponents : _XRILeftHandComponents;
 		Pose fingerPose;
@@ -100,7 +117,7 @@ public class XRIPlatformHand : MonoBehaviour, IPlatformHand
 		return fingerPose;
 	}
 
-	public Pose GetFingerTrackingLose(bool isRightHand, int fingerIdx, bool isLocal)
+	public virtual Pose GetFingerTrackingLose(bool isRightHand, int fingerIdx, bool isLocal)
 	{
 		Pose palmCurPose = isRightHand ? RightHandPose : LeftHandPose;
 		Pose originLocalPose = isRightHand ? RightHandComponents.Hand.DicOriginFingersLcoalPose[(XRHandJointID)fingerIdx] : LeftHandComponents.Hand.DicOriginFingersLcoalPose[(XRHandJointID)fingerIdx];
@@ -113,7 +130,7 @@ public class XRIPlatformHand : MonoBehaviour, IPlatformHand
 	}
 
 
-	public void GetIKFingers(out Vector3[] position, out Quaternion[] rotation)
+	public virtual void GetIKFingers(out Vector3[] position, out Quaternion[] rotation)
 	{
 		position = new Vector3[10];
 		rotation = new Quaternion[10];
@@ -132,7 +149,7 @@ public class XRIPlatformHand : MonoBehaviour, IPlatformHand
 		}
 	}
 
-	public void SetOriginFingerLocalPose(List<Pose> localPoseData)
+	public virtual void SetOriginFingerLocalPose(List<Pose> localPoseData)
 	{
 		List<Pose> leftOri = localPoseData.GetRange(0, 5);
 		List<Pose> rightOri = localPoseData.GetRange(5, 5);
@@ -144,18 +161,4 @@ public class XRIPlatformHand : MonoBehaviour, IPlatformHand
 		}
 	}
 
-	void Start()
-	{
-		_tipIndexList = new List<XRHandJointID>
-		{
-			XRHandJointID.ThumbTip,
-			XRHandJointID.IndexTip,
-			XRHandJointID.MiddleTip,
-			XRHandJointID.RingTip,
-			XRHandJointID.LittleTip,
-		};
-
-		_XRILeftHandComponents.InitializeDummyHandRoot(this.transform.root);
-		_XRIRightHandComponents.InitializeDummyHandRoot(this.transform.root);
-	}
 }
