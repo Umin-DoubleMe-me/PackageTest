@@ -6,7 +6,7 @@
 	"unity": "2022.3",
 	"unityRelease": "0b5",
 	"dependencies": {
-		"com.meta.xr.sdk.all": "59.0.0"
+		//"com.meta.xr.sdk.all": "59.0.0"
 	},
 	"keywords": [
 		"vivarium",

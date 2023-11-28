@@ -1,0 +1,20 @@
+{
+    "name": "OculusInput",
+    "rootNamespace": "",
+    "references": [
+        "GUID:53c7015aa41cbab47b253a37c01c3019"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "Android"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "VIVA_OCULUS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
