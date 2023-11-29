@@ -38,21 +38,33 @@ public class InputManager : MonoBehaviour
 
 	private void OnValidate()
 	{
+		PackageSetting();
+	}
+
+	private void PackageSetting()
+	{
+#if UNITY_EDITOR
 		if (PackageStart)
 		{
+			Debug.Log("PackageSetting Start");
 			PackageStart = false;
 
 			PackageControllerObj resultPackage = null;
 			foreach (PackageControllerObj packageObj in PlatformPackage)
 			{
 				if (TargetPlatform == packageObj.Platform)
+				{
 					resultPackage = packageObj;
-				else
-					packageObj.PackageDeactive();
+					break;
+				}
 			}
 
 			resultPackage?.PackageInit();
+
+
+			Debug.Log("PackageSetting Done");
 		}
+#endif
 	}
 
 	private void GenerateInputObj()

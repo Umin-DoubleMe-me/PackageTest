@@ -1,9 +1,10 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [CreateAssetMenu(fileName = "PackageController", menuName = "Scriptable Object/PackageController", order = int.MaxValue)]
 public class PackageControllerObj : ScriptableObject
@@ -15,7 +16,16 @@ public class PackageControllerObj : ScriptableObject
 	public GameObject PackageInputObj;
 
 	private bool _isWorking = false;
-	
+
+	public GameObject GenerateInputObj(Transform parent)
+	{
+		GameObject resultObj = Instantiate(PackageInputObj, parent, true);
+
+		return resultObj;
+	}
+
+	#region Editor
+#if UNITY_EDITOR
 	public void PackageInit()
 	{
 		if (_isWorking) return;
@@ -46,13 +56,6 @@ public class PackageControllerObj : ScriptableObject
 
 	}
 
-	public GameObject GenerateInputObj(Transform parent)
-	{
-		GameObject resultObj = Instantiate(PackageInputObj, parent, true);
-
-		return resultObj;
-	}
-
 	private void DefineAdd()
 	{
 		string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
@@ -70,6 +73,6 @@ public class PackageControllerObj : ScriptableObject
 		allDefines.Remove(DefineString);
 		PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, string.Join(";", allDefines.ToArray()));
 	}
-
-}
 #endif
+	#endregion
+}

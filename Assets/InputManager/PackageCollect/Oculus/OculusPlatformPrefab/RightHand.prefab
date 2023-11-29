@@ -167,8 +167,8 @@ GameObject:
   - component: {fileID: 4174846231243717490}
   - component: {fileID: 8118205464481092351}
   - component: {fileID: 6037870821085104726}
-  - component: {fileID: 8332650443094747478}
   - component: {fileID: 6468723056977404520}
+  - component: {fileID: 1971498329988796636}
   m_Layer: 0
   m_Name: DistanceHandGrabInteractor
   m_TagString: Untagged
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14164f8f23faae4293baeb84485b3d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hand: {fileID: 0}
+  _hand: {fileID: 1873692101909354502}
 --- !u!114 &6037870821085104726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hmd: {fileID: 0}
---- !u!114 &8332650443094747478
+--- !u!114 &6468723056977404520
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,7 +236,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1029066496788686357}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 635f432b0b5a8c44992364202b2f5d5b, type: 3}
+  m_Script: {fileID: 11500000, guid: 194b7d1054b8fa64b9bdcea46d06c3a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activeState: {fileID: 8118205464481092351}
+  _includeChildrenAsDependents: 1
+  _gameObjects: []
+  _monoBehaviours:
+  - {fileID: 0}
+--- !u!114 &1971498329988796636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1029066496788686357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88587dd6c3763534e9767ac8d6ebaab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _activeState: {fileID: 8118205464481092351}
@@ -258,23 +275,6 @@ MonoBehaviour:
       _aidFrustum: {fileID: 4777580897765555791}
       _aidBlending: 0
     _detectionDelay: 0.1
---- !u!114 &6468723056977404520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1029066496788686357}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 194b7d1054b8fa64b9bdcea46d06c3a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _activeState: {fileID: 8118205464481092351}
-  _includeChildrenAsDependents: 1
-  _gameObjects: []
-  _monoBehaviours:
-  - {fileID: 8332650443094747478}
 --- !u!1 &1135028717005865466
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,10 +555,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2525429238609408815}
   - component: {fileID: 1407760423634848900}
-  - component: {fileID: 4231169986437901463}
   - component: {fileID: 5495208050146917275}
   - component: {fileID: 6826082178692252015}
   - component: {fileID: 6087923789758757662}
+  - component: {fileID: 8115524638228639315}
   m_Layer: 0
   m_Name: HandRayInteractor
   m_TagString: Untagged
@@ -596,28 +596,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14164f8f23faae4293baeb84485b3d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hand: {fileID: 0}
---- !u!114 &4231169986437901463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1909641491171340702}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4733c5f009d26ad49b3685117b8d3eb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _activeState: {fileID: 5495208050146917275}
-  _interactableFilters: []
-  _candidateTiebreaker: {fileID: 0}
-  _maxIterationsPerFrame: 1
-  _data: {fileID: 0}
-  _selector: {fileID: 8480508953756595133}
-  _rayOrigin: {fileID: 3766123515527134778}
-  _maxRayLength: 5
-  _equalDistanceThreshold: 0.001
+  _hand: {fileID: 1873692101909354502}
 --- !u!114 &5495208050146917275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,7 +625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a56054f6e3838f4e85dce4e71979800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactor: {fileID: 4231169986437901463}
+  _interactor: {fileID: 0}
   _property: 8
 --- !u!114 &6087923789758757662
 MonoBehaviour:
@@ -664,7 +643,28 @@ MonoBehaviour:
   _includeChildrenAsDependents: 1
   _gameObjects: []
   _monoBehaviours:
-  - {fileID: 4231169986437901463}
+  - {fileID: 0}
+--- !u!114 &8115524638228639315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909641491171340702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c528772a6579a6a40a3a60fa6ea6316d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activeState: {fileID: 5495208050146917275}
+  _interactableFilters: []
+  _candidateTiebreaker: {fileID: 0}
+  _maxIterationsPerFrame: 1
+  _data: {fileID: 0}
+  _selector: {fileID: 8480508953756595133}
+  _rayOrigin: {fileID: 3766123515527134778}
+  _maxRayLength: 5
+  _equalDistanceThreshold: 0.001
 --- !u!1 &2054971916443872303
 GameObject:
   m_ObjectHideFlags: 0
@@ -970,10 +970,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactors:
-  - {fileID: 4258330571688267658}
-  - {fileID: 1295514203306291745}
-  - {fileID: 4231169986437901463}
-  - {fileID: 8332650443094747478}
+  - {fileID: 4307471695881911779}
+  - {fileID: 7151803395381365981}
+  - {fileID: 8115524638228639315}
+  - {fileID: 1971498329988796636}
   _activeState: {fileID: 0}
   _candidateComparer: {fileID: 0}
   _maxIterationsPerFrame: 3
@@ -1069,7 +1069,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ff26c21ac005534e8af75f8427be9d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _handGrabState: {fileID: 8332650443094747478}
+  _handGrabState: {fileID: 0}
   _syntheticHand: {fileID: 0}
 --- !u!1 &3377100417405584232
 GameObject:
@@ -1107,7 +1107,7 @@ Transform:
   - {fileID: 2021067259259022647}
   - {fileID: 5777683102088236196}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1873692101909354502
 MonoBehaviour:
@@ -1187,7 +1187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hand: {fileID: 1407760423634848900}
-  _rayInteractor: {fileID: 4231169986437901463}
+  _rayInteractor: {fileID: 8115524638228639315}
   _materialEditor: {fileID: 0}
   _glowColor: {r: 1, g: 1, b: 1, a: 0}
   _glowType: 18
@@ -1237,7 +1237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hand: {fileID: 1407760423634848900}
-  _rayInteractor: {fileID: 4231169986437901463}
+  _rayInteractor: {fileID: 8115524638228639315}
   _cursor: {fileID: 8993933447971301516}
   _renderer: {fileID: 6574029360741963380}
   _outlineColor: {r: 0, g: 0, b: 0, a: 1}
@@ -1434,7 +1434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8667bbf66117438986bafc711f920ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _handGrabInteractor: {fileID: 1295514203306291745}
+  _handGrabInteractor: {fileID: 0}
   _handRenderer: {fileID: 0}
   _materialEditor: {fileID: 0}
   _handVisual: {fileID: 0}
@@ -1490,7 +1490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ff26c21ac005534e8af75f8427be9d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _handGrabState: {fileID: 1295514203306291745}
+  _handGrabState: {fileID: 0}
   _syntheticHand: {fileID: 0}
 --- !u!1 &5019292036425694260
 GameObject:
@@ -1534,8 +1534,8 @@ GameObject:
   m_Component:
   - component: {fileID: 395168816722220055}
   - component: {fileID: 1223368043353277950}
-  - component: {fileID: 1295514203306291745}
   - component: {fileID: 5538282268485967217}
+  - component: {fileID: 7151803395381365981}
   m_Layer: 0
   m_Name: HandGrabInteractor
   m_TagString: Untagged
@@ -1575,8 +1575,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14164f8f23faae4293baeb84485b3d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hand: {fileID: 0}
---- !u!114 &1295514203306291745
+  _hand: {fileID: 1873692101909354502}
+--- !u!114 &5538282268485967217
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1585,7 +1585,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 5308973456632779255}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9067480af55f5874d8f613b16812f968, type: 3}
+  m_Script: {fileID: 11500000, guid: 194b7d1054b8fa64b9bdcea46d06c3a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activeState: {fileID: 1223368043353277950}
+  _includeChildrenAsDependents: 1
+  _gameObjects: []
+  _monoBehaviours: []
+--- !u!114 &7151803395381365981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5308973456632779255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0c8c4f612d9d604a81bf920685c6565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _activeState: {fileID: 1223368043353277950}
@@ -1604,22 +1620,6 @@ MonoBehaviour:
   _pinchPoint: {fileID: 4976734637828223229}
   _pinchCollider: {fileID: 8060864461348950653}
   _velocityCalculator: {fileID: 0}
---- !u!114 &5538282268485967217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5308973456632779255}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 194b7d1054b8fa64b9bdcea46d06c3a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _activeState: {fileID: 1223368043353277950}
-  _includeChildrenAsDependents: 1
-  _gameObjects: []
-  _monoBehaviours: []
 --- !u!1 &5893503832109279673
 GameObject:
   m_ObjectHideFlags: 0
@@ -1861,7 +1861,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hand: {fileID: 1407760423634848900}
-  _rayInteractor: {fileID: 4231169986437901463}
+  _rayInteractor: {fileID: 8115524638228639315}
   _skinnedMeshRenderer: {fileID: 4206836007159381824}
   _remapCurve:
     serializedVersion: 2
@@ -1946,8 +1946,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3236762030052493553}
   - component: {fileID: 5400166230711029386}
-  - component: {fileID: 4258330571688267658}
   - component: {fileID: 4393720149791389774}
+  - component: {fileID: 4307471695881911779}
   m_Layer: 0
   m_Name: HandPokeInteractor
   m_TagString: Untagged
@@ -1984,28 +1984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b14164f8f23faae4293baeb84485b3d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hand: {fileID: 0}
---- !u!114 &4258330571688267658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6528193414053938068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d952c175ec3c6554199fd744548ce50a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _activeState: {fileID: 5400166230711029386}
-  _interactableFilters: []
-  _candidateTiebreaker: {fileID: 0}
-  _maxIterationsPerFrame: 3
-  _data: {fileID: 0}
-  _pointTransform: {fileID: 4053364876910994231}
-  _radius: 0.005
-  _touchReleaseThreshold: 0.002
-  _equalDistanceThreshold: 0.001
+  _hand: {fileID: 1873692101909354502}
 --- !u!114 &4393720149791389774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2022,6 +2001,27 @@ MonoBehaviour:
   _includeChildrenAsDependents: 1
   _gameObjects: []
   _monoBehaviours: []
+--- !u!114 &4307471695881911779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6528193414053938068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52d467ed000c02a4b877ad5c38876ae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activeState: {fileID: 5400166230711029386}
+  _interactableFilters: []
+  _candidateTiebreaker: {fileID: 0}
+  _maxIterationsPerFrame: 3
+  _data: {fileID: 0}
+  _pointTransform: {fileID: 4053364876910994231}
+  _radius: 0.005
+  _touchReleaseThreshold: 0.002
+  _equalDistanceThreshold: 0.001
 --- !u!1 &6667814881412948949
 GameObject:
   m_ObjectHideFlags: 0
@@ -2067,7 +2067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hand: {fileID: 5400166230711029386}
-  _pokeInteractor: {fileID: 4258330571688267658}
+  _pokeInteractor: {fileID: 4307471695881911779}
   _handVisual: {fileID: 0}
   _handRenderer: {fileID: 0}
   _materialEditor: {fileID: 0}
@@ -2121,7 +2121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hand: {fileID: 5400166230711029386}
-  _pokeInteractor: {fileID: 4258330571688267658}
+  _pokeInteractor: {fileID: 4307471695881911779}
   _syntheticHand: {fileID: 0}
 --- !u!1 &6898017330169176496
 GameObject:
@@ -2560,7 +2560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8667bbf66117438986bafc711f920ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _handGrabInteractor: {fileID: 8332650443094747478}
+  _handGrabInteractor: {fileID: 0}
   _handRenderer: {fileID: 0}
   _materialEditor: {fileID: 0}
   _handVisual: {fileID: 0}

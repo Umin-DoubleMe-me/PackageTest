@@ -3,15 +3,34 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
+public class InteractorCollector
+{
+	public IPokeInteractor pokeInteractor;
+	public IGrabInteractor grabInteractor;
+	public IRayInteractor rayInteractor;
+	public IDistanceInteractor distanceInteractor;
+}
+
+
 public abstract class APlatfromController : MonoBehaviour, IPlatformController
 {
-	[SerializeField] private InteractorCollector _rightHandInteractor;
-	[SerializeField] private InteractorCollector _leftHandInteractor;
+	[Header("RightHand")]
 	[SerializeField] private GameObject _rightHandObj;
+	[SerializeField] private GameObject _rightpokeInteractor;
+	[SerializeField] private GameObject _rightgrabInteractor;
+	[SerializeField] private GameObject _rightrayInteractor;
+	[SerializeField] private GameObject _rightdistanceInteractor;
+	[Header("LeftHand")]
 	[SerializeField] private GameObject _leftHandObj;
+	[SerializeField] private GameObject _leftpokeInteractor;
+	[SerializeField] private GameObject _leftgrabInteractor;
+	[SerializeField] private GameObject _leftrayInteractor;
+	[SerializeField] private GameObject _leftdistanceInteractor;
 
 	private IPlatformHand _rightHand;
 	private IPlatformHand _leftHand;
+	private InteractorCollector _rightHandInteractor;
+	private InteractorCollector _leftHandInteractor;
 
 	public virtual void Init()
 	{
@@ -31,6 +50,22 @@ public abstract class APlatfromController : MonoBehaviour, IPlatformController
 			Debug.LogError("Can't find _leftHand");
 			return;
 		}
+
+		_rightHandInteractor = new InteractorCollector()
+		{
+			pokeInteractor = _rightpokeInteractor.GetComponent<IPokeInteractor>(),
+			grabInteractor = _rightgrabInteractor.GetComponent<IGrabInteractor>(),
+			rayInteractor = _rightrayInteractor.GetComponent<IRayInteractor>(),
+			distanceInteractor = _rightdistanceInteractor.GetComponent<IDistanceInteractor>(),
+		};
+
+		_leftHandInteractor = new InteractorCollector()
+		{
+			pokeInteractor = _leftpokeInteractor.GetComponent<IPokeInteractor>(),
+			grabInteractor = _leftgrabInteractor.GetComponent<IGrabInteractor>(),
+			rayInteractor = _leftrayInteractor.GetComponent<IRayInteractor>(),
+			distanceInteractor = _leftdistanceInteractor.GetComponent<IDistanceInteractor>(),
+		};
 
 		GenerateEventSystem();
 	}
@@ -175,13 +210,4 @@ public abstract class APlatfromController : MonoBehaviour, IPlatformController
 
 	protected abstract void GenerateEventSystem();
 
-}
-
-[Serializable]
-public class InteractorCollector : MonoBehaviour
-{
-	public IPokeInteractor pokeInteractor;
-	public IGrabInteractor grabInteractor;
-	public IRayInteractor rayInteractor;
-	public IDistanceInteractor distanceInteractor;
 }
