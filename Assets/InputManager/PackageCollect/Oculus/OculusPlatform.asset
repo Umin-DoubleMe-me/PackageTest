@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Platform: 1
   DependenciesPackages:
-  - com.meta.xr.sdk.core
-  - com.meta.xr.sdk.interaction
+  - com.meta.xr.sdk.interaction.ovr
   - com.meta.xr.sdk.platform
   DefineString: VIVA_OCULUS
