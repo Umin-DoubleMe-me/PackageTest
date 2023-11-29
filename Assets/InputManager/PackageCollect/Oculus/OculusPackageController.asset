@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0537413cb8f73e4f9b11d23a050a8d4, type: 3}
-  m_Name: OculusPlatform
+  m_Name: OculusPackageController
   m_EditorClassIdentifier: 
   Platform: 1
   DependenciesPackages:
   - com.meta.xr.sdk.interaction.ovr
   - com.meta.xr.sdk.platform
   DefineString: VIVA_OCULUS
+  PackageInputObj: {fileID: 1890046254713732043, guid: bc22ef13d7e80f7438d33f067f3dec1d, type: 3}

@@ -15,6 +15,26 @@ public class InputManager : MonoBehaviour
 	public platform TargetPlatform;
 	public List<PackageControllerObj> PlatformPackage;
 
+	private PackageControllerObj _targetPackageController = null;
+
+	private IPlatformController _targetPlatformController;
+	public IPlatformController TargetPlatformController
+	{
+		get
+		{
+			if (_targetPlatformController == null)
+			{
+				Debug.LogError("There is no targetPlatformController");
+				return null;
+			}
+			return _targetPlatformController;
+		}
+	}
+
+	private void Start()
+	{
+		GenerateInputObj();
+	}
 
 	private void OnValidate()
 	{
@@ -35,34 +55,62 @@ public class InputManager : MonoBehaviour
 		}
 	}
 
+	private void GenerateInputObj()
+	{
+		foreach (PackageControllerObj packageObj in PlatformPackage)
+		{
+			if (TargetPlatform == packageObj.Platform)
+			{
+				_targetPackageController = packageObj;
+				break;
+			}
+		}
+
+		if (_targetPackageController.PackageInputObj == null)
+		{
+			Debug.LogError("There is no PackageInputObj");
+			return;
+		}
+
+		GameObject resultInputObj = _targetPackageController.GenerateInputObj(this.transform);
+		if(!resultInputObj.TryGetComponent(out _targetPlatformController))
+		{
+			Debug.LogError("There is no PlatformController");
+			return;
+		}
+	}
+
+
 }
 
 
 #region Assembly 검색해서 가져오기
 /*
- 			IEnumerable<Type> implementations = FindImplementationsOfType<APackageController>();
-			foreach (Type type in implementations)
-			{
-				object instance = Activator.CreateInstance(type);
-				string methodName = "";
-
-				if (type.Name == TargetPlatform.ToString())
-					methodName = "PackageInit";
-				else
-					methodName = "PackageDeactive";
-
-				// 특정 인터페이스에 정의된 메소드를 호출
-				MethodInfo method = type.GetMethod(methodName); // MyMethod는 호출하려는 메소드명
-
-				// 만약 메소드가 존재한다면 실행
-				method?.Invoke(instance, null);
-			}
 
 
+	private void GetPlatformPackage()
+	{
+		IEnumerable<Type> implementations = FindImplementationsOfType<PackageControllerObj>();
+		foreach (Type type in implementations)
+		{
+			object instance = Activator.CreateInstance(type);
+			string methodName = "";
 
+			if (type.Name == TargetPlatform.ToString())
+				methodName = "PackageInit";
+			else
+				methodName = "PackageDeactive";
+
+			// 특정 인터페이스에 정의된 메소드를 호출
+			MethodInfo method = type.GetMethod(methodName); // MyMethod는 호출하려는 메소드명
+
+			// 만약 메소드가 존재한다면 실행
+			method?.Invoke(instance, null);
+		}
+	}
 
 	// 특정 인터페이스 타입을 찾을 때 사용할 메서드
-	public static IEnumerable<Type> FindImplementationsOfType<T>()
+	private static IEnumerable<Type> FindImplementationsOfType<T>()
 	{
 		Type interfaceType = typeof(T);
 
@@ -86,6 +134,7 @@ public class InputManager : MonoBehaviour
 
 		return implementations;
 	}
+
 
  
  */

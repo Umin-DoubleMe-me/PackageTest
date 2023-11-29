@@ -2,12 +2,18 @@
     "name": "OculusInput",
     "rootNamespace": "",
     "references": [
-        "GUID:53c7015aa41cbab47b253a37c01c3019"
+        "GUID:53c7015aa41cbab47b253a37c01c3019",
+        "GUID:2a230cb87a1d3ba4a98bdc0ddae76e6c",
+        "GUID:48af58ae5328ff048acacd924604a804",
+        "GUID:f64c9ebcd7899c3448a08dc9f9ddbe30",
+        "GUID:7040c93f6035f5749888e6fdf5ef28f8",
+        "GUID:a3e7656b45677bf4b85e02a291fe5569"
     ],
-    "includePlatforms": [],
-    "excludePlatforms": [
-        "Android"
+    "includePlatforms": [
+        "Android",
+        "Editor"
     ],
+    "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
